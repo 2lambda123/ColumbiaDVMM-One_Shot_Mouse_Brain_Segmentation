@@ -3,8 +3,8 @@ import cv2
 # from keras.preprocessing.image import ImageDataGenerator
 from keras.utils.data_utils import Sequence
 from imgaug import augmenters as iaa
-import random
 import utils
+import secrets
 
 
 class OneShotTrainingSequenceMultiRegion(Sequence):
@@ -67,35 +67,35 @@ class OneShotTrainingSequenceMultiRegion(Sequence):
 
         for i in range(self.batch_size):
             # augmentation
-            if random.random() < -0.7:
+            if secrets.SystemRandom().random() < -0.7:
                 angle = 0
             else:
-                angle = random.uniform(-10, 10)
+                angle = secrets.SystemRandom().uniform(-10, 10)
 
-            if random.random() < -0.5:
+            if secrets.SystemRandom().random() < -0.5:
                 scale = 1.0
             else:
                 #scale = random.uniform(0.9, 1.1)
-                scale = random.uniform(0.95, 1.05)
+                scale = secrets.SystemRandom().uniform(0.95, 1.05)
             tmp_rotation_matrix = cv2.getRotationMatrix2D((self.image_width / 2, self.image_height / 2),
                                                           angle=angle, scale=scale)
             rotation_matrix = np.eye(3, dtype=np.float32)
             rotation_matrix[0:2, :] = tmp_rotation_matrix
 
             shearing_matrix = np.eye(3, dtype=np.float32)
-            if random.random() < -0.5:
+            if secrets.SystemRandom().random() < -0.5:
                 shearing_matrix[0, 1] = 0.0
                 shearing_matrix[1, 0] = 0.0
             else:
-                shearing_matrix[0, 1] = random.uniform(-0.005, 0.005)
-                shearing_matrix[1, 0] = random.uniform(-0.005, 0.005)
+                shearing_matrix[0, 1] = secrets.SystemRandom().uniform(-0.005, 0.005)
+                shearing_matrix[1, 0] = secrets.SystemRandom().uniform(-0.005, 0.005)
 
             translation_matrix = np.eye(3, dtype=np.float32)
-            translation_matrix[0, 2] = random.randint(-25, 25)
-            translation_matrix[1, 2] = random.randint(-25, 25)
+            translation_matrix[0, 2] = secrets.SystemRandom().randint(-25, 25)
+            translation_matrix[1, 2] = secrets.SystemRandom().randint(-25, 25)
             if self.more_region:
-                translation_matrix[0,2] = random.randint(-10, 10)
-                translation_matrix[1,2] = random.randint(-10, 10)
+                translation_matrix[0,2] = secrets.SystemRandom().randint(-10, 10)
+                translation_matrix[1,2] = secrets.SystemRandom().randint(-10, 10)
 
             transform_matrix = np.matmul(
                 translation_matrix, np.matmul(
